@@ -253,10 +253,65 @@ branches = grow([rh.Point3d(0,0,0)], params) ## passing the starting point as th
 > Download this [Grasshopper file](data/2_challenge_start.gh) which contains the breadth-first version of the branching code. Can you add additional code within the queue-based Python script to define a new branching behavior for the `3` parameter that creates the branching seen in the screenshot below. You should only add code within the `elif param == 3:` code block starting on line 36 of the Python script. You should not need to modify anything else about the code, the Grasshopper definition, or the set of parameters.
 >
 > ![](images/2_04.png)
+```python
+# CHALLENGE 1
+import Rhino.Geometry as rh
 
+def grow(pts, params):
+    
+    if len(params) <= 0:
+        return []
+    
+    param = params.pop(0)
+    start_pt = pts.pop(0)
+    
+    lines = []
+    
+    if param == 1:
+        new_pt = rh.Point3d(start_pt)
+        new_pt.Transform(rh.Transform.Translation(0,0,1))
+        lines.append(rh.Line(start_pt, new_pt))
+        pts.append(new_pt)
+        
+        return lines + grow(pts, params)
+    
+    elif param == 2:
+        new_pt_1 = rh.Point3d(start_pt)
+        new_pt_1.Transform(rh.Transform.Translation(0,1,1))
+        lines.append(rh.Line(start_pt, new_pt_1))
+        pts.append(new_pt_1)
+        
+        new_pt_2 = rh.Point3d(start_pt)
+        new_pt_2.Transform(rh.Transform.Translation(0,-1,1))
+        lines.append(rh.Line(start_pt, new_pt_2))
+        pts.append(new_pt_2)
+        
+        return lines + grow(pts, params)
+    
+    elif param == 3:
+        
+        new_pt_3 = rh.Point3d(start_pt)
+        new_pt_3.Transform(rh.Transform.Translation(1,0,1))
+        lines.append(rh.Line(start_pt, new_pt_3))
+        pts.append(new_pt_3)
+        
+        new_pt_4 = rh.Point3d(start_pt)
+        new_pt_4.Transform(rh.Transform.Translation(-1,0,1))
+        lines.append(rh.Line(start_pt, new_pt_4))
+        pts.append(new_pt_4)
+        
+        return lines + grow(pts, params)
+    
+    else:
+        return lines
+
+branches = grow([rh.Point3d(0,0,0)], params)
+
+```
 Once you're done implementing this challenge, paste your final code below. Once you've finished all changes on this page, create a pull request on this page called `2-your_uni` (for example `2-dn2216`).
 
 ```python
+# CHALLENGE 2
 import Rhino.Geometry as rh
 import math
 from scriptcontext import doc
